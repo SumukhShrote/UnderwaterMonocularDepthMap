@@ -85,7 +85,11 @@ class UNet(nn.Module):
             stride=2)
         
         self.iconv4 = upconv(256, 128,3,1)
-
+        self.disp4_trans_conv = nn.ConvTranspose2d(
+            in_channels=2, 
+            out_channels=2,
+            kernel_size=3, 
+            stride=2,padding = 1,output_padding=1)
         self.disp4 = get_disp(128)
 
         self.up_trans_3 = nn.ConvTranspose2d(
@@ -95,6 +99,11 @@ class UNet(nn.Module):
             stride=2)
         
         self.iconv3= upconv(130, 64,3,1)
+        self.disp3_trans_conv = nn.ConvTranspose2d(
+            in_channels=2, 
+            out_channels=2,
+            kernel_size=3, 
+            stride=2,padding = 1,output_padding=1)
         self.disp3 = get_disp(64)
 
         self.up_trans_2 = nn.ConvTranspose2d(
@@ -104,6 +113,11 @@ class UNet(nn.Module):
             stride=1)
         
         self.iconv2= upconv(66, 32,3,1)
+        self.disp2_trans_conv = nn.ConvTranspose2d(
+            in_channels=2, 
+            out_channels=2,
+            kernel_size=3, 
+            stride=2,padding = 1,output_padding=1)
         self.disp2 = get_disp(32)
 
         self.up_trans_1 = nn.ConvTranspose2d(
@@ -113,6 +127,7 @@ class UNet(nn.Module):
             stride=2)
         
         self.iconv1= upconv(18, 16,3,1)
+       
         self.disp1 = get_disp(16)
 
 
@@ -169,11 +184,7 @@ class UNet(nn.Module):
         # y: (150x110x64)
 
         ### UPSAMPLE dipare4 *2
-        dispare4 = nn.ConvTranspose2d(
-            in_channels=2, 
-            out_channels=2,
-            kernel_size=3, 
-            stride=2,padding = 1,output_padding=1)(dispare4)
+        dispare4 = self.disp4_trans_conv(dispare4)
 
         # dispare4: (140x100x2)
         intermediate_disparity_1 = pad_tensor(dispare4,skip4_1)
@@ -193,11 +204,7 @@ class UNet(nn.Module):
         #print("Trans_Conv_5_with padding",y.size())
 
         ### UPSAMPLE dipare3 *2
-        dispare3 = nn.ConvTranspose2d(
-            in_channels=2, 
-            out_channels=2,
-            kernel_size=3, 
-            stride=2,padding = 1,output_padding=1)(dispare3)
+        dispare3 = self.disp3_trans_conv(dispare3)
         #print("Trans_Conv_disparity4",dispare3.size())
         intermediate_disparity_2 = pad_tensor(dispare3,skip5_1)
         
@@ -217,11 +224,7 @@ class UNet(nn.Module):
 
         ### UPSAMPLE dipare2 *2
         #print("Trans_Conv_6_with padding",x.size())
-        dispare2 = nn.ConvTranspose2d(
-            in_channels=2, 
-            out_channels=2,
-            kernel_size=3, 
-            stride=2,padding = 1,output_padding=1)(dispare2)
+        dispare2 = self.disp2_trans_conv(dispare2)
         intermediate_disparity_3 = pad_tensor(dispare2,x)
         #print("Check before concating")
         #print(x.size())
@@ -235,7 +238,7 @@ class UNet(nn.Module):
         #print("final output",x.size())
         final_disparity = dispare1
 
-        return intermediate_disparity_1, intermediate_disparity_2, intermediate_disparity_3, final_disparity
+        return final_disparity,intermediate_disparity_3, intermediate_disparity_2, intermediate_disparity_1
     
 
 # if __name__==  "__main__":

@@ -206,14 +206,14 @@ def depth_loss(left_image, right_image, disparity_1, disparity_2, disparity_3, d
 
 
 # if __name__ == '__main__':
-#     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-#     print("Using device:", device)
+#     # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+#     # print("Using device:", device)
 
-#     input_image = torch.randn([1, 3, 640, 480]).to(device)
+#     # input_image = torch.randn([1, 3, 640, 480]).to(device)
 
-#     disp =[torch.randn([1, 2, 615, 455]).to(device), torch.randn([1, 2, 619, 459]).to(device), torch.randn([1, 2, 311, 231]).to(device), torch.randn([1, 2, 150, 110]).to(device)]
+#     # disp =[torch.randn([1, 2, 615, 455]).to(device), torch.randn([1, 2, 619, 459]).to(device), torch.randn([1, 2, 311, 231]).to(device), torch.randn([1, 2, 150, 110]).to(device)]
 
-#     pyramid = scale_pyramid(input_image)    
+#     # pyramid = scale_pyramid(input_image)    
 
-#     dep_loss = depth_loss(input_image,input_image,disp[0],disp[1],disp[2],disp[3])
-#     print(dep_loss)
+#     # dep_loss = depth_loss(input_image,input_image,disp[0],disp[1],disp[2],disp[3])
+#     # print(dep_loss)
